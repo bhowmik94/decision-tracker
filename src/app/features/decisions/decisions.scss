@@ -1,0 +1,99 @@
+@function risk-color($value) {
+  @if $value == 1 {
+    @return #4caf50; 
+  } @else if $value == 2 {
+    @return #66bb6a;
+  } @else if $value == 3 {
+    @return #8bc34a;
+  } @else if $value == 4 {
+    @return #cddc39;
+  } @else if $value == 5 {
+    @return #ffeb3b;
+  } @else if $value == 6 {
+    @return #ffc107;
+  } @else if $value == 7 {
+    @return #ff9800;
+  } @else if $value == 8 {
+    @return #ff5722;
+  } @else if $value == 9 {
+    @return #f44336;
+  } @else if $value == 10 {
+    @return #d32f2f; 
+  } @else {
+    @return #9e9e9e; // Gray for invalid values
+  }
+}
+
+@for $i from 1 through 10 {
+  .risk-#{$i} {
+    background-color: risk-color($i);
+  }
+}
+
+@function feasibility-color($value) {
+  @if $value == 10 {
+    @return #4caf50;
+  } @else if $value == 9 {
+    @return #66bb6a;
+  } @else if $value == 8 {
+    @return #8bc34a;
+  } @else if $value == 7 {
+    @return #cddc39;
+  } @else if $value == 6 {
+    @return #ffeb3b;
+  } @else if $value == 5 {
+    @return #ffc107;
+  } @else if $value == 4 {
+    @return #ff9800;
+  } @else if $value == 3 {
+    @return #ff5722;
+  } @else if $value == 2 {
+    @return #f44336;
+  } @else if $value == 1 {
+    @return #d32f2f; 
+  } @else {
+    @return #9e9e9e; // Gray for invalid values
+  }
+}
+
+@for $i from 1 through 10 {
+  .feasibility-#{$i} {
+    background-color: feasibility-color($i);
+  }
+}
+
+.badge-risk,
+.badge-feasibility {
+  min-width: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-align: center;
+  width: fit-content;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+
+.badge-priority {
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: white;
+}
+.priority-critical {
+  background-color: #212121;
+}
+
+.priority-important {
+  background-color: #424242;
+}
+
+.priority-moderate {
+  background-color: #727272;
+}
+
+.priority-optional {
+  background-color: #9d9d9d;
+}

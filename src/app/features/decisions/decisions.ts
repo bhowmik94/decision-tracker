@@ -7,7 +7,6 @@ import { MatTableDataSource } from '@angular/material/table';
 
 import { Decision } from '../../models/decision.model';
 import { DecisionRepository } from '../../repositories/decision.repository';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-decisions',
@@ -20,7 +19,7 @@ export class Decisions {
   displayedColumns: string[] = [
     'title',
     'date',
-    'rating',
+    'priority',
     'riskFactor',
     'feasibility',
     'actions',

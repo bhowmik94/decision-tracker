@@ -5,7 +5,7 @@ export interface Decision {
   date: Date;
   pros: string[];
   cons: string[];
-  rating: number;
+  priority: string;
   riskFactor: number;
   feasibility: number;
 }
