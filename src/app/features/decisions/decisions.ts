@@ -8,12 +8,35 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Decision } from '../../models/decision.model';
 import { DecisionRepository } from '../../repositories/decision.repository';
 
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
+
 @Component({
   selector: 'app-decisions',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatCardModule, MatButtonModule],
+  imports: [
+    CommonModule,
+    MatTableModule,
+    MatCardModule,
+    MatButtonModule,
+  ],
   templateUrl: './decisions.html',
   styleUrl: './decisions.scss',
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition(
+        'expanded <=> collapsed',
+        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
+      ),
+    ]),
+  ],
 })
 export class Decisions {
   displayedColumns: string[] = [
@@ -34,6 +57,7 @@ export class Decisions {
     });
   }
 
+  expandedDecision: Decision | null = null;
   viewDetails(decision: Decision) {
     // implement navigation or modal later
     console.log('Viewing', decision);

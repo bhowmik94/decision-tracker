@@ -1,6 +1,18 @@
+@media screen and (max-width: 600px) {
+  .decisions-container {
+    width: 100%;
+    overflow-x: auto;
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+  }
+}
+
 @function risk-color($value) {
   @if $value == 1 {
-    @return #4caf50; 
+    @return #4caf50;
   } @else if $value == 2 {
     @return #66bb6a;
   } @else if $value == 3 {
@@ -18,7 +30,7 @@
   } @else if $value == 9 {
     @return #f44336;
   } @else if $value == 10 {
-    @return #d32f2f; 
+    @return #d32f2f;
   } @else {
     @return #9e9e9e; // Gray for invalid values
   }
@@ -50,7 +62,7 @@
   } @else if $value == 2 {
     @return #f44336;
   } @else if $value == 1 {
-    @return #d32f2f; 
+    @return #d32f2f;
   } @else {
     @return #9e9e9e; // Gray for invalid values
   }
@@ -64,11 +76,11 @@
 
 .badge-risk,
 .badge-feasibility {
-  min-width: 1rem;
+  min-width: 1rem; // important for uniform badge size
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: black;
   padding: 4px 8px;
   border-radius: 4px;
   text-align: center;
@@ -76,8 +88,11 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-
 .badge-priority {
+  width: 4rem; // important for uniform badge size
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 4px 8px;
   border-radius: 4px;
   color: white;
@@ -87,7 +102,7 @@
 }
 
 .priority-important {
-  background-color: #424242;
+  background-color: #4c4c4c;
 }
 
 .priority-moderate {
@@ -96,4 +111,56 @@
 
 .priority-optional {
   background-color: #9d9d9d;
+}
+
+// Decision Table Collapse Styles
+
+.decision-detail {
+  overflow: hidden;
+}
+
+.decision-row:hover {
+  background-color: whitesmoke;
+}
+
+.decision-detail-row {
+  height: 0; // Initially collapsed
+}
+
+.decision-detail-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  .decision-header {
+    display: grid;
+    padding: 4px;
+    grid-template-rows: repeat(3, auto); // stacked vertically
+    gap: 8px;
+
+    .decision-title,
+    .decision-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .decision-description {
+      padding: 8px 0px;
+      border-top: 1px solid #e0e0e0;
+    }
+  }
+  .decision-pros-cons {
+    display: grid;
+    padding: 4px;
+    gap: 8px;
+    grid-template-columns: repeat(2, auto); // stacked horizontally
+
+    h4 {
+      font-weight: 600;
+    }
+
+    .decision-pros {
+      border-right: 1px solid #e0e0e0;
+    }
+  }
 }

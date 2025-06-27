@@ -1,56 +1,144 @@
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z2">
-  <!-- Title Column -->
-  <ng-container matColumnDef="title">
-    <th mat-header-cell *matHeaderCellDef>Title</th>
-    <td mat-cell *matCellDef="let decision">{{ decision.title }}</td>
-  </ng-container>
+<div class="decisions-container">
+  <table
+    mat-table
+    [dataSource]="dataSource"
+    multiTemplateDataRows
+    class="mat-elevation-z2"
+  >
+    <!-- Title Column -->
+    <ng-container matColumnDef="title">
+      <th mat-header-cell *matHeaderCellDef>Title</th>
+      <td mat-cell *matCellDef="let decision">{{ decision.title }}</td>
+    </ng-container>
 
-  <!-- Date Column -->
-  <ng-container matColumnDef="date">
-    <th mat-header-cell *matHeaderCellDef>Date</th>
-    <td mat-cell *matCellDef="let decision">
-      {{ decision.date | date:'mediumDate' }}
-    </td>
-  </ng-container>
+    <!-- Date Column -->
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef>Date</th>
+      <td mat-cell *matCellDef="let decision">
+        {{ decision.date | date:'mediumDate' }}
+      </td>
+    </ng-container>
 
-  <!-- Rating Column -->
-  <ng-container matColumnDef="priority">
-    <th mat-header-cell *matHeaderCellDef>Priority</th>
-    <td mat-cell *matCellDef="let decision">
-    <span class="badge-priority" [ngClass]="'priority-' + decision.priority">
-        {{ decision.priority }}
-    </span>
-    </td>
-  </ng-container>
+    <!-- Rating Column -->
+    <ng-container matColumnDef="priority">
+      <th mat-header-cell *matHeaderCellDef>Priority</th>
+      <td mat-cell *matCellDef="let decision">
+        <span
+          class="badge-priority"
+          [ngClass]="'priority-' + decision.priority"
+        >
+          {{ decision.priority }}
+        </span>
+      </td>
+    </ng-container>
 
-  <!-- Risk Factor Column -->
-  <ng-container matColumnDef="riskFactor">
-    <th mat-header-cell *matHeaderCellDef>Risk</th>
-    <td mat-cell *matCellDef="let decision">
-      <span class="badge-risk" [ngClass]="'risk-' + decision.riskFactor">
-        {{ decision.riskFactor }}
-      </span>
-    </td>
-  </ng-container>
+    <!-- Risk Factor Column -->
+    <ng-container matColumnDef="riskFactor">
+      <th mat-header-cell *matHeaderCellDef>Risk</th>
+      <td mat-cell *matCellDef="let decision">
+        <span class="badge-risk" [ngClass]="'risk-' + decision.riskFactor">
+          {{ decision.riskFactor }}
+        </span>
+      </td>
+    </ng-container>
 
-  <!-- Feasibility Column -->
-  <ng-container matColumnDef="feasibility">
-    <th mat-header-cell *matHeaderCellDef>Feasibility</th>
-    <td mat-cell *matCellDef="let decision">
-      <span class="badge-feasibility" [ngClass]="'feasibility-' + decision.feasibility">
-        {{ decision.feasibility }}
-      </span>
-    </td>
-  </ng-container>
+    <!-- Feasibility Column -->
+    <ng-container matColumnDef="feasibility">
+      <th mat-header-cell *matHeaderCellDef>Feasibility</th>
+      <td mat-cell *matCellDef="let decision">
+        <span
+          class="badge-feasibility"
+          [ngClass]="'feasibility-' + decision.feasibility"
+        >
+          {{ decision.feasibility }}
+        </span>
+      </td>
+    </ng-container>
 
-  <!-- Actions Column -->
-  <ng-container matColumnDef="actions">
-    <th mat-header-cell *matHeaderCellDef>Actions</th>
-    <td mat-cell *matCellDef="let decision">
-      <button mat-button (click)="viewDetails(decision)">View</button>
-    </td>
-  </ng-container>
+    <!-- Actions Column -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let decision">
+        <button mat-button (click)="viewDetails(decision)">View</button>
+      </td>
+    </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
+    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+    <ng-container matColumnDef="expandedDetail">
+      <td
+        mat-cell
+        *matCellDef="let decision"
+        [attr.colspan]="displayedColumns.length"
+      >
+        <div
+          class="decision-detail"
+          [@detailExpand]="decision == expandedDecision ? 'expanded' : 'collapsed'"
+        >
+          <div class="decision-detail-content">
+            <div class="decision-header">
+              <div class="decision-title">
+                <h2><b>{{ decision.title }}</b></h2>
+                <p class="decision-date">
+                  {{ decision.date | date: 'mediumDate' }}
+                </p>
+              </div>
+
+              <div class="decision-meta">
+                <span>Priority:&nbsp;</span>
+                <span class="badge-priority priority-{{ decision.priority }}">
+                  {{ decision.priority }}
+                </span>
+
+                <span>Risk:&nbsp;</span>
+                <span class="badge-risk risk-{{ decision.riskFactor }}">
+                  {{ decision.riskFactor }}
+                </span>
+
+                <span>Feasibility:&nbsp;</span>
+                <span
+                  class="badge-feasibility feasibility-{{ decision.feasibility }}"
+                >
+                  {{ decision.feasibility }}
+                </span>
+              </div>
+
+              <div class="decision-description">
+                <span>Description:&nbsp;</span>{{ decision.description }}
+              </div>
+            </div>
+
+            <div class="decision-pros-cons">
+              <div class="decision-pros">
+                <h4>Pros</h4>
+                @for (item of decision.pros; track $index) {
+                <p>{{ item }}</p>
+                }
+              </div>
+
+              <div class="decision-cons">
+                <h4>Cons</h4>
+                @for (item of decision.cons; track $index) {
+                <p>{{ item }}</p>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr
+      mat-row
+      *matRowDef="let decision; columns: displayedColumns;"
+      class="decision-row"
+      [class.example-expanded-row]="expandedDecision === decision"
+      (click)="expandedDecision = expandedDecision === decision ? null : decision"
+    ></tr>
+    <tr
+      class="decision-detail-row"
+      mat-row
+      *matRowDef="let row; columns: ['expandedDetail'];"
+    ></tr>
+  </table>
+</div>
