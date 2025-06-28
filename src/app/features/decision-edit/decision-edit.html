@@ -1,1 +1,95 @@
-<p>decision-edit works!</p>
+<form class="decision-form" [formGroup]="form">
+  <!-- Title -->
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Title</mat-label>
+    <input matInput formControlName="title" />
+  </mat-form-field>
+
+  <div class="decision-form-row">
+    <!-- Date -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Date</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="date" />
+      <mat-datepicker-toggle matSuffix [for]="picker" />
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <!-- Priority -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Priority</mat-label>
+      <mat-select formControlName="priority">
+        @for (item of priorityOptions; track $index) {
+        <mat-option [value]="item">{{ item }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!-- Description -->
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Description</mat-label>
+    <textarea matInput rows="4" formControlName="description"></textarea>
+  </mat-form-field>
+
+  <!-- Risk Factor -->
+  <label>Risk Factor: {{ form.value.riskFactor }}</label>
+  <mat-slider min="1" max="10" step="1">
+    <input matSliderThumb formControlName="riskFactor" />
+  </mat-slider>
+
+  <!-- Feasibility -->
+  <label>Feasibility: {{ form.value.feasibility }}</label>
+  <mat-slider min="1" max="10" step="1">
+    <input matSliderThumb formControlName="feasibility" />
+  </mat-slider>
+
+  <!-- Pros -->
+  <mat-form-field class="full-width" appearance="outline">
+    <mat-label>Pros</mat-label>
+    <mat-chip-grid #chipListPros>
+      <mat-chip-row
+        *ngFor="let pro of form.value.pros; let i = index"
+        (removed)="removeItem('pros', i)"
+      >
+        {{ pro }}
+        <mat-icon matChipRemove>cancel</mat-icon>
+      </mat-chip-row>
+      <input
+        placeholder="Add new pros"
+        [matChipInputFor]="chipListPros"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+        (matChipInputTokenEnd)="addItem('pros', $event)"
+      />
+    </mat-chip-grid>
+  </mat-form-field>
+
+  <!-- Cons -->
+  <mat-form-field class="full-width" appearance="outline">
+    <mat-label>Cons</mat-label>
+    <mat-chip-grid #chipListCons>
+      <mat-chip-row
+        *ngFor="let con of form.value.cons; let i = index"
+        (removed)="removeItem('cons', i)"
+      >
+        {{ con }}
+        <mat-icon matChipRemove>cancel</mat-icon>
+      </mat-chip-row>
+      <input
+        placeholder="Add new cons"
+        [matChipInputFor]="chipListCons"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+        (matChipInputTokenEnd)="addItem('cons', $event)"
+      />
+    </mat-chip-grid>
+  </mat-form-field>
+
+  <!-- Submit -->
+  <button
+    class="submit-button"
+    mat-raised-button
+    color="primary"
+    (click)="onSubmit()"
+  >
+    Save
+  </button>
+</form>

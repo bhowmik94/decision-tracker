@@ -15,6 +15,7 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-decisions',
@@ -48,18 +49,19 @@ export class Decisions {
     'actions',
   ];
   dataSource = new MatTableDataSource<Decision>();
+  expandedDecision: Decision | null = null;
 
-  constructor(private repo: DecisionRepository) {}
+  constructor(private repo: DecisionRepository, private router: Router) {}
 
   ngOnInit(): void {
-    this.repo.getAllTools().subscribe((data) => {
+    this.repo.getAllDecisions().subscribe((data) => {
       this.dataSource.data = data;
+      console.log('Decisions loaded:', data);
     });
   }
 
-  expandedDecision: Decision | null = null;
-  viewDetails(decision: Decision) {
-    // implement navigation or modal later
+  editDetails(decision: Decision) {
     console.log('Viewing', decision);
+    this.router.navigate(['/decision/edit', decision.id]);
   }
 }
