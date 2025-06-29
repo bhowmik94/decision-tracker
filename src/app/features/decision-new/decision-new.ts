@@ -90,10 +90,10 @@ export class DecisionNew {
       const newDecision = {
         ...this.form.value,
         date:
-          this.decision && this.decision.date instanceof Timestamp
-            ? this.decision.date.toDate()
-            : this.decision
-            ? this.decision.date
+          this.form.value && this.form.value.date instanceof Timestamp
+            ? this.form.value.date.toDate()
+            : this.form.value
+            ? this.form.value.date
             : null,
       };
       this.repo

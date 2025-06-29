@@ -26,6 +26,10 @@ export class DecisionRepository {
   }
 
   createDecision(data: Omit<Decision, 'id'>): Observable<Decision> {
-    return from(this.decisionService.createDecision(data));
+    return from(this.decisionService.createDecision(data)).pipe(
+      switchMap((newDecision) =>
+        this.decisionService.fetchDecisionById(newDecision.id)
+      )
+    );
   }
 }

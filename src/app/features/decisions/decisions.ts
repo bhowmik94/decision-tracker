@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, AfterViewInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
@@ -8,6 +8,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Decision } from '../../models/decision.model';
 import { DecisionRepository } from '../../repositories/decision.repository';
 import { PageHeader } from '../../shared/page-header/page-header';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 
 import {
   animate,
@@ -28,6 +29,7 @@ import { Timestamp } from 'firebase/firestore';
     MatCardModule,
     MatButtonModule,
     PageHeader,
+    MatPaginatorModule,
   ],
   templateUrl: './decisions.html',
   styleUrl: './decisions.scss',
@@ -63,12 +65,16 @@ export class Decisions {
         ...d,
         date: d.date instanceof Timestamp ? d.date.toDate() : d.date,
       }));
-      console.log('Decisions loaded:', data);
     });
   }
 
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+  }
+
   editDetails(decision: Decision) {
-    console.log('Viewing', decision);
     this.router.navigate(['/decision/edit', decision.id]);
   }
 
