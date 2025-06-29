@@ -10,6 +10,11 @@
   }
 }
 
+.action-buttons {
+  display: flex;
+  align-items: center;
+}
+
 @function risk-color($value) {
   @if $value == 1 {
     @return #4caf50;

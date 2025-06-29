@@ -32,4 +32,8 @@ export class DecisionRepository {
       )
     );
   }
+
+  deleteDecision(id: string): Observable<void> {
+    return from(this.decisionService.deleteDecision(id));
+  }
 }

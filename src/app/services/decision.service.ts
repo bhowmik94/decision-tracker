@@ -10,6 +10,7 @@ import {
 } from '@angular/fire/firestore';
 import { Decision } from '../models/decision.model';
 import { Observable } from 'rxjs';
+import { deleteDoc } from 'firebase/firestore';
 
 @Injectable({
   providedIn: 'root',
@@ -39,5 +40,10 @@ export class DecisionService {
     const newDocRef = doc(decisionCollection); // auto-ID
     const newDecision = { ...data, id: newDocRef.id };
     return setDoc(newDocRef, newDecision).then(() => newDecision);
+  }
+
+  deleteDecision(decisionId: string): Promise<void> {
+    const decisionDocRef = doc(this.firestore, 'decisions', decisionId);
+    return deleteDoc(decisionDocRef);
   }
 }

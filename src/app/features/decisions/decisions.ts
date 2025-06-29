@@ -9,6 +9,10 @@ import { Decision } from '../../models/decision.model';
 import { DecisionRepository } from '../../repositories/decision.repository';
 import { PageHeader } from '../../shared/page-header/page-header';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatIcon } from '@angular/material/icon';
+
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDeleteDialog } from '../confirm-delete-dialog/confirm-delete-dialog';
 
 import {
   animate,
@@ -19,6 +23,7 @@ import {
 } from '@angular/animations';
 import { Router } from '@angular/router';
 import { Timestamp } from 'firebase/firestore';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-decisions',
@@ -30,6 +35,8 @@ import { Timestamp } from 'firebase/firestore';
     MatButtonModule,
     PageHeader,
     MatPaginatorModule,
+    MatIcon,
+    ConfirmDeleteDialog,
   ],
   templateUrl: './decisions.html',
   styleUrl: './decisions.scss',
@@ -56,7 +63,12 @@ export class Decisions {
   dataSource = new MatTableDataSource<Decision>();
   expandedDecision: Decision | null = null;
 
-  constructor(private repo: DecisionRepository, private router: Router) {}
+  constructor(
+    private repo: DecisionRepository,
+    private router: Router,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {
     this.repo.getAllDecisions().subscribe((data) => {
@@ -80,5 +92,44 @@ export class Decisions {
 
   createNewDecision() {
     this.router.navigate(['/decisions/new']);
+  }
+
+  confirmDelete(decision: Decision): void {
+    const dialogRef = this.dialog.open(ConfirmDeleteDialog, {
+      width: '300px',
+      data: decision,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.deleteDecision(decision.id);
+        console.log('Decision deleted:', decision.id);
+      }
+    });
+  }
+
+  deleteDecision(id: string): void {
+    this.repo.deleteDecision(id).subscribe({
+      next: () => {
+        console.log('Decision deleted successfully:', id);
+
+        // Remove the deleted decision from the data source
+        // This ensures the UI updates immediately without needing to refetch data
+        this.dataSource.data = this.dataSource.data.filter(
+          (decision) => decision.id !== id
+        );
+        this.snackBar.open('Decision deleted successfully', 'Close', {
+          duration: 3000,
+          panelClass: ['snackbar-success'],
+        });
+      },
+      error: (error) => {
+        console.error('Error deleting decision:', error);
+        this.snackBar.open('Error deleting decision', 'Close', {
+          duration: 3000,
+          panelClass: ['snackbar-error'],
+        });
+      },
+    });
   }
 }
