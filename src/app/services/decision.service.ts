@@ -1,6 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collectionData, collection } from '@angular/fire/firestore';
-import { doc, updateDoc, docData } from '@angular/fire/firestore';
+import {
+  Firestore,
+  collectionData,
+  collection,
+  setDoc,
+  doc,
+  updateDoc,
+  docData,
+} from '@angular/fire/firestore';
 import { Decision } from '../models/decision.model';
 import { Observable } from 'rxjs';
 
@@ -25,5 +32,12 @@ export class DecisionService {
   updateDecision(decisionId: string, data: Partial<Decision>): Promise<void> {
     const decisionDocRef = doc(this.firestore, 'decisions', decisionId);
     return updateDoc(decisionDocRef, data);
+  }
+
+  createDecision(data: Omit<Decision, 'id'>): Promise<Decision> {
+    const decisionCollection = collection(this.firestore, 'decisions');
+    const newDocRef = doc(decisionCollection); // auto-ID
+    const newDecision = { ...data, id: newDocRef.id };
+    return setDoc(newDocRef, newDecision).then(() => newDecision);
   }
 }

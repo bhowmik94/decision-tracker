@@ -3,7 +3,7 @@ import { Timestamp } from "firebase/firestore";
 export type Priority = 'critical' | 'important' | 'moderate' | 'optional';
 
 export interface Decision {
-  id: number;
+  id: string; // Unique identifier for the decision
   title: string;
   description: string;
   date: Date | Timestamp; // Using Date or Timestamp for Firestore compatibility

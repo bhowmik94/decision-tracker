@@ -22,8 +22,7 @@ import { Timestamp } from '@angular/fire/firestore';
 import { PageHeader } from '../../shared/page-header/page-header';
 
 @Component({
-  selector: 'app-decision-edit',
-  standalone: true,
+  selector: 'app-decision-new',
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -39,11 +38,10 @@ import { PageHeader } from '../../shared/page-header/page-header';
     MatButtonModule,
     PageHeader,
   ],
-  templateUrl: './decision-edit.html',
-  styleUrl: './decision-edit.scss',
+  templateUrl: './decision-new.html',
+  styleUrl: './decision-new.scss',
 })
-export class DecisionEdit {
-  decisionID!: string;
+export class DecisionNew {
   decision!: Decision | null;
 
   form: FormGroup;
@@ -57,11 +55,6 @@ export class DecisionEdit {
     private snackBar: MatSnackBar,
     private location: Location
   ) {
-    this.route.paramMap.subscribe((params) => {
-      this.decisionID = params.get('id')!;
-      console.log('Editing decision with ID:', this.decisionID);
-    });
-
     this.form = this.fb.group({
       title: [''],
       description: [''],
@@ -71,34 +64,6 @@ export class DecisionEdit {
       feasibility: [0],
       pros: [[]],
       cons: [[]],
-    });
-  }
-
-  ngOnInit(): void {
-    this.repo.getDecisionById(this.decisionID).subscribe((data) => {
-      this.decision = data;
-
-      // Patch form values here
-      this.form.patchValue({
-        title: data.title,
-        description: data.description,
-        date:
-          data.date instanceof Timestamp
-            ? data.date.toDate() // Convert Timestamp to Date
-            // If data.date is already a Date, use it directly
-            : data.date instanceof Date
-            ? data.date
-            : new Date(data.date), // fallback if it's t
-        priority: data.priority,
-        riskFactor: data.riskFactor,
-        feasibility: data.feasibility,
-        pros: data.pros || [],
-        cons: data.cons || [],
-      });
-
-      // Reassign decision to ensure date is in correct format
-      // This is useful if we want to use the decision object later
-      this.decision = this.form.value as Decision;
     });
   }
 
@@ -122,12 +87,8 @@ export class DecisionEdit {
   onSubmit() {
     if (this.form.valid) {
       console.log('Submitting', this.form.value);
-
-      const current = this.form.value;
-
-      // Normalize original decision
-      const original = {
-        ...this.decision,
+      const newDecision = {
+        ...this.form.value,
         date:
           this.decision && this.decision.date instanceof Timestamp
             ? this.decision.date.toDate()
@@ -135,30 +96,18 @@ export class DecisionEdit {
             ? this.decision.date
             : null,
       };
-
-      // Deep comparison using JSON
-      const unchanged = JSON.stringify(current) === JSON.stringify(original);
-
-      if (unchanged) {
-        this.snackBar.open('No changes made to the form.', 'Close', {
-          duration: 3000,
-          panelClass: ['snackbar-info'],
-        });
-        return;
-      }
-
       this.repo
-        .updateDecision(this.decisionID, this.form.value)
+        .createDecision(newDecision)
         .pipe(take(1)) // Ensure we only take the first emitted value
         .subscribe({
           next: () => {
-            this.snackBar.open('Decision updated successfully!', 'Close', {
+            this.snackBar.open('Decision created successfully!', 'Close', {
               duration: 3000,
               panelClass: ['snackbar-success'],
             });
           },
           error: (error) => {
-            this.snackBar.open('Error updating decision.', 'Close', {
+            this.snackBar.open('Error creating decision.', 'Close', {
               duration: 3000,
               panelClass: ['snackbar-error'],
             });

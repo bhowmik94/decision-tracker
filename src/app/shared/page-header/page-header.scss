@@ -1,0 +1,31 @@
+.sub-header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 16px;
+  background-color: #f5f5f5; // Light neutral background
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem; // Space below the header
+}
+
+.left,
+.right {
+  width: 20%;
+  display: flex;
+  align-items: center;
+}
+
+.center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none; // allows clicks to pass through
+}
+
+.title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 500;
+}

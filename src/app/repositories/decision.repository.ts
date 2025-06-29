@@ -24,4 +24,8 @@ export class DecisionRepository {
       switchMap(() => this.decisionService.fetchDecisionById(id)) // fetch the updated document
     );
   }
+
+  createDecision(data: Omit<Decision, 'id'>): Observable<Decision> {
+    return from(this.decisionService.createDecision(data));
+  }
 }

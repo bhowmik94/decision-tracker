@@ -1,0 +1,25 @@
+.decision-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 600px;
+  margin: auto;
+
+  @media screen and (min-width: 600px) {
+    .decision-form-row {
+      display: flex;
+      flex-direction: row;
+      gap: 16px;
+      align-items: center; /* Aligns items vertically in the center */
+    }
+  }
+
+  .full-width {
+    width: 100%;
+  }
+
+  .submit-button {
+    width: auto;
+    align-self: flex-end; /* Aligns the button to the right */
+  }
+}

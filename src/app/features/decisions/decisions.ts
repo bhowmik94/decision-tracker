@@ -7,6 +7,7 @@ import { MatTableDataSource } from '@angular/material/table';
 
 import { Decision } from '../../models/decision.model';
 import { DecisionRepository } from '../../repositories/decision.repository';
+import { PageHeader } from '../../shared/page-header/page-header';
 
 import {
   animate,
@@ -16,6 +17,7 @@ import {
   trigger,
 } from '@angular/animations';
 import { Router } from '@angular/router';
+import { Timestamp } from 'firebase/firestore';
 
 @Component({
   selector: 'app-decisions',
@@ -25,6 +27,7 @@ import { Router } from '@angular/router';
     MatTableModule,
     MatCardModule,
     MatButtonModule,
+    PageHeader,
   ],
   templateUrl: './decisions.html',
   styleUrl: './decisions.scss',
@@ -56,6 +59,10 @@ export class Decisions {
   ngOnInit(): void {
     this.repo.getAllDecisions().subscribe((data) => {
       this.dataSource.data = data;
+      this.dataSource.data = this.dataSource.data.map((d) => ({
+        ...d,
+        date: d.date instanceof Timestamp ? d.date.toDate() : d.date,
+      }));
       console.log('Decisions loaded:', data);
     });
   }
@@ -63,5 +70,9 @@ export class Decisions {
   editDetails(decision: Decision) {
     console.log('Viewing', decision);
     this.router.navigate(['/decision/edit', decision.id]);
+  }
+
+  createNewDecision() {
+    this.router.navigate(['/decisions/new']);
   }
 }
