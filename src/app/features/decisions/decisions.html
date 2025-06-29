@@ -66,13 +66,13 @@
       <th mat-header-cell *matHeaderCellDef>Actions</th>
       <td mat-cell *matCellDef="let decision">
         <div class="action-buttons">
-          <button matButton="outlined" (click)="editDetails(decision)">
+          <button matButton="outlined" (click)="editDetails(decision); $event.stopPropagation()">
             Edit
           </button>
           <button
             mat-icon-button
             color="warn"
-            (click)="confirmDelete(decision)"
+            (click)="confirmDelete(decision); $event.stopPropagation()"
           >
             <mat-icon>delete</mat-icon>
           </button>
