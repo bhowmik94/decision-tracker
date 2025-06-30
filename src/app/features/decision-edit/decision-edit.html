@@ -6,14 +6,14 @@
   <!-- Title -->
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>Title</mat-label>
-    <input matInput formControlName="title" />
+    <input matInput formControlName="title" required />
   </mat-form-field>
 
   <div class="decision-form-row">
     <!-- Date -->
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Date</mat-label>
-      <input matInput [matDatepicker]="picker" formControlName="date" />
+      <input matInput [matDatepicker]="picker" formControlName="date" required />
       <mat-datepicker-toggle matSuffix [for]="picker" />
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
@@ -21,7 +21,7 @@
     <!-- Priority -->
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Priority</mat-label>
-      <mat-select formControlName="priority">
+      <mat-select formControlName="priority" required>
         @for (item of priorityOptions; track $index) {
         <mat-option [value]="item">{{ item }}</mat-option>
         }

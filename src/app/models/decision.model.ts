@@ -2,6 +2,8 @@ import { Timestamp } from "firebase/firestore";
 
 export type Priority = 'critical' | 'important' | 'moderate' | 'optional';
 
+export const priorityOptions: Priority[] = ['critical', 'important', 'moderate', 'optional'];
+
 export interface Decision {
   id: string; // Unique identifier for the decision
   title: string;

@@ -2,7 +2,10 @@ import { Component } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { DecisionRepository } from '../../repositories/decision.repository';
-import { Decision } from '../../models/decision.model';
+import { Decision, priorityOptions } from '../../models/decision.model';
+
+import { normalizeDecisionDate } from '../../shared/page-header/utils/decision.utils';
+import { addChipItem, removeChipItem } from '../../shared/page-header/utils/decision.utils';
 
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
@@ -48,7 +51,7 @@ export class DecisionEdit {
 
   form: FormGroup;
   separatorKeysCodes: number[] = [ENTER, COMMA];
-  priorityOptions: string[] = ['critical', 'important', 'moderate', 'optional'];
+  priorityOptions = priorityOptions;
 
   constructor(
     private route: ActivatedRoute,
@@ -85,10 +88,10 @@ export class DecisionEdit {
         date:
           data.date instanceof Timestamp
             ? data.date.toDate() // Convert Timestamp to Date
-            // If data.date is already a Date, use it directly
-            : data.date instanceof Date
+            : // If data.date is already a Date, use it directly
+            data.date instanceof Date
             ? data.date
-            : new Date(data.date), // fallback if it's t
+            : new Date(data.date), // fallback to ensure date is a Date object
         priority: data.priority,
         riskFactor: data.riskFactor,
         feasibility: data.feasibility,
@@ -103,38 +106,19 @@ export class DecisionEdit {
   }
 
   addItem(field: 'pros' | 'cons', event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
-    if (value) {
-      const current = this.form.value[field] as string[];
-      this.form.get(field)?.setValue([...current, value]);
-    }
-    event.chipInput!.clear();
+    addChipItem(this.form, field, event);
   }
 
   removeItem(field: 'pros' | 'cons', index: number): void {
-    const current = this.form.value[field] as string[];
-    if (index >= 0) {
-      current.splice(index, 1);
-      this.form.get(field)?.setValue([...current]);
-    }
+    removeChipItem(this.form, field, index);
   }
 
   onSubmit() {
     if (this.form.valid) {
-      console.log('Submitting', this.form.value);
-
       const current = this.form.value;
 
       // Normalize original decision
-      const original = {
-        ...this.decision,
-        date:
-          this.decision && this.decision.date instanceof Timestamp
-            ? this.decision.date.toDate()
-            : this.decision
-            ? this.decision.date
-            : null,
-      };
+      const original = normalizeDecisionDate(this.decision);
 
       // Deep comparison using JSON
       const unchanged = JSON.stringify(current) === JSON.stringify(original);

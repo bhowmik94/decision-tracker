@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { Location } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
 import { DecisionRepository } from '../../repositories/decision.repository';
-import { Decision } from '../../models/decision.model';
+import { Decision, priorityOptions } from '../../models/decision.model';
+
+import { normalizeDecisionDate } from '../../shared/page-header/utils/decision.utils';
+import { addChipItem, removeChipItem } from '../../shared/page-header/utils/decision.utils';
 
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
@@ -46,10 +48,9 @@ export class DecisionNew {
 
   form: FormGroup;
   separatorKeysCodes: number[] = [ENTER, COMMA];
-  priorityOptions: string[] = ['critical', 'important', 'moderate', 'optional'];
+  priorityOptions = priorityOptions;
 
   constructor(
-    private route: ActivatedRoute,
     private repo: DecisionRepository,
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
@@ -68,34 +69,16 @@ export class DecisionNew {
   }
 
   addItem(field: 'pros' | 'cons', event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
-    if (value) {
-      const current = this.form.value[field] as string[];
-      this.form.get(field)?.setValue([...current, value]);
-    }
-    event.chipInput!.clear();
+    addChipItem(this.form, field, event);
   }
 
   removeItem(field: 'pros' | 'cons', index: number): void {
-    const current = this.form.value[field] as string[];
-    if (index >= 0) {
-      current.splice(index, 1);
-      this.form.get(field)?.setValue([...current]);
-    }
+    removeChipItem(this.form, field, index);
   }
 
   onSubmit() {
     if (this.form.valid) {
-      console.log('Submitting', this.form.value);
-      const newDecision = {
-        ...this.form.value,
-        date:
-          this.form.value && this.form.value.date instanceof Timestamp
-            ? this.form.value.date.toDate()
-            : this.form.value
-            ? this.form.value.date
-            : null,
-      };
+      const newDecision = normalizeDecisionDate(this.form.value);
       this.repo
         .createDecision(newDecision)
         .pipe(take(1)) // Ensure we only take the first emitted value
