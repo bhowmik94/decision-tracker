@@ -54,6 +54,15 @@ ng e2e
 
 Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
 
-## Additional Resources
+## Run With Docker Compose
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```bash
+docker-compose up --build
+```
+
+The app will be available at:
+```arduino
+http://localhost:8080
+```
+
+
